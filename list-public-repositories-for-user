@@ -1,0 +1,21 @@
+#!/usr/bin/perl
+# vi: set ts=4 sw=4 :
+
+use warnings;
+use strict;
+
+my $GITHUB_USER = shift;
+my $file = "repos.$GITHUB_USER.yaml";
+my $url = "https://api.github.com/users/$GITHUB_USER/repos";
+
+unless ((-f $file) and (-M _)*86400 < 300) {
+	system "wget", "-q", "-O", $file, $url;
+	$? == 0 or die "$0: wget $url failed (rc=$?)";
+	utime time(), time(), $file;
+}
+
+use YAML::Syck 'LoadFile';
+my $y = LoadFile($file);
+print $_->{name},"\n" for @$y;
+
+# eof list-repositories

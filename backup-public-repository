@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -eu
+
+GITHUB_USER="$1"
+REPO="$2"
+DIRECTORY="$3"
+echo $0 $1 $2 $3
+
+if cd "$DIRECTORY" ; then
+	git pull
+else
+	git clone git://github.com/$GITHUB_USER/$REPO.git "$DIRECTORY".tmp
+	mv -v -- "$DIRECTORY".tmp "$DIRECTORY"
+fi

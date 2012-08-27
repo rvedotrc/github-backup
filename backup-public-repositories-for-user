@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -eu
+
+GITHUB_USER="$1"
+DIRECTORY="${2:-var/repos/$GITHUB_USER}"
+
+mkdir -p -- "$DIRECTORY"
+
+rc=0
+
+./list-public-repositories-for-user "$GITHUB_USER" | while read REPO ; do
+	if ! ./backup-public-repository "$GITHUB_USER" "$REPO" "$DIRECTORY/$REPO" ; then
+		rc=1
+	fi
+done
+
+exit $rc
